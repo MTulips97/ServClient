@@ -38,7 +38,12 @@ int main(int argc, char *argv[]) {
     memset(&server_address, 0, sizeof server_address);
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(server_port);
-    memcpy(&server_address.sin_addr.s_addr, server_host->h_addr, server_host->h_length);
+   //convet IPv4 AND IPv6 address from text to binary form
+    if (inet_pton(AF_INET, "192.168.216.128", &servaddr.sin_addr) <=0)
+    {
+        printf("\n Heyy! Your address is invalid \n");
+        return -1;
+    }
 
     /* Create TCP socket. */
     if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {

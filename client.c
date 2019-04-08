@@ -50,7 +50,7 @@ int main(){
   pthread_t tid[51];
   while(i< 50)
   {
-    if( pthread_create(&tid[i], NULL, cientThread, NULL) != 0 )
+    if( pthread_create(&tid[i], NULL, clientThread, NULL) != 0 )
            printf("Failed to create thread\n");
     i++;
   }

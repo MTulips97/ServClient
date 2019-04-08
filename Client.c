@@ -1,67 +1,44 @@
-#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <netinet/in.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <netdb.h>
 #include <unistd.h>
+#include <arpa/inet.h>
+#define PORT 444
 
-#define SERVER_NAME_LEN_MAX 444
-#define h_addr h_addr_list[0]
-
-int main(int argc, char *argv[]) {
-    char server_name[SERVER_NAME_LEN_MAX + 1] = { 0 };
-    int server_port, socket_fd;
-    struct hostent *server_host;
-    struct sockaddr_in server_address;
+int main(int argc, char const *argv[])
+{
+    struct sockaddr_in address;
+    int sockfd = 0, vread;
+    struct sockaddr_in servaddr;
+    char *annyeong = "annyeong from client";
+    char buff[1111] = {0};
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Socket creation error..try again \n");
+        return -1;
+    }
+    memset(&servaddr, '0', sizeof(servaddr));
     
-
-    /* Get server name from command line arguments or stdin. */
-    if (argc > 1) {
-        strncpy(server_name, argv[1], SERVER_NAME_LEN_MAX);
-    } else {
-        printf("Enter Server Name: ");
-        scanf("%s", server_name);
-    }
-
-    /* Get server port from command line arguments or stdin. */
-    server_port = argc > 2 ? atoi(argv[2]) : 0;
-    if (!server_port) {
-        printf("Enter Port: ");
-        scanf("%d", &server_port);
-    }
-
-    /* Get server host from server name. */
-    server_host = gethostbyname(server_name);
-
-    /* Initialise IPv4 server address with server host. */
-    memset(&server_address, 0, sizeof server_address);
-    server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(server_port);
-   //convet IPv4 AND IPv6 address from text to binary form
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(PORT);
+    
+    //convet IPv4 AND IPv6 address from text to binary form
     if (inet_pton(AF_INET, "192.168.216.128", &servaddr.sin_addr) <=0)
     {
         printf("\n Heyy! Your address is invalid \n");
         return -1;
     }
-
-    /* Create TCP socket. */
-    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        perror("socket");
-        exit(1);
+    
+    if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) <0)
+    {
+        printf("\n Your connection failed!!!! \n");
+        return -1;
     }
-
-    /* Connect to socket with server address. */
-    if (connect(socket_fd, (struct sockaddr *)&server_address, sizeof server_address) == -1) {
-		perror("connect");
-        exit(1);
-	}
-
-    /* TODO: Put server interaction code here. For example, use
-     * write(socket_fd,,) and read(socket_fd,,) to send and receive messages
-     * with the client.
-     */
-
-    close(socket_fd);
+    send(sockfd, annyeong , strlen(annyeong) , 0);
+    printf("annyeong my bae\n");
+    vread = read(sockfd , buff , 1111);
+    printf("%s\n",buff);
     return 0;
 }

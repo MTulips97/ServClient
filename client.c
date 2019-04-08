@@ -1,65 +1,44 @@
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <netdb.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <netinet/in.h>
+#include <string.h>
+#include <netdb.h>
 #include <unistd.h>
-#include <errno.h>
-#include <arpa/inet.h> 
+#include <arpa/inet.h>
 #define PORT 4444
 
-int main(int argc, char *argv[])
+int main(int argc, char const *argv[])
 {
-    int sockfd = 0, n = 0;
-    char recvBuff[1024];
-    struct sockaddr_in serv_addr; 
-
-   //convet IPv4 AND IPv6 address from text to binary form
-    if (inet_pton(AF_INET, "192.168.216.128", &serv_addr.sin_addr) <=0)
+    struct sockaddr_in address;
+    int sockfd = 0, vread;
+    struct sockaddr_in servaddr;
+    char *annyeong = "annyeong from client";
+    char buff[1111] = {0};
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Socket creation error..try again \n");
+        return -1;
+    }
+    memset(&servaddr, '0', sizeof(servaddr));
+    
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(PORT);
+    
+    //convet IPv4 AND IPv6 address from text to binary form
+    if (inet_pton(AF_INET, "192.168.216.128", &servaddr.sin_addr) <=0)
     {
         printf("\n Heyy! Your address is invalid \n");
         return -1;
     }
-
-    memset(recvBuff, '0',sizeof(recvBuff));
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    
+    if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) <0)
     {
-        printf("\n Error : Could not create socket \n");
-        return 1;
-    } 
-
-    memset(&serv_addr, '0', sizeof(serv_addr)); 
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(4444); 
-
-    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
-    {
-        printf("\n inet_pton error occured\n");
-        return 1;
-    } 
-
-    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-       printf("\n Error : Connect Failed \n");
-       return 1;
-    } 
-
-    while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
-    {
-        recvBuff[n] = 0;
-        if(fputs(recvBuff, stdout) == EOF)
-        {
-            printf("\n Error : Fputs error\n");
-        }
-    } 
-
-    if(n < 0)
-    {
-        printf("\n Read error \n");
-    } 
-
+        printf("\n Your connection failed!!!! \n");
+        return -1;
+    }
+    send(sockfd, annyeong , strlen(annyeong) , 0);
+    printf("annyeong my bae\n");
+    vread = read(sockfd , buff , 1111);
+    printf("%s\n",buff);
     return 0;
 }

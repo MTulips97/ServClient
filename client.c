@@ -1,65 +1,64 @@
-#include <stdio.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <netinet/in.h>
+#include <netdb.h>
+#include <stdio.h>
 #include <string.h>
-#include <arpa/inet.h>
 #include <stdlib.h>
-#include <fcntl.h> // for open
-#include <unistd.h> // for close
-#include<pthread.h>
-#define PORT 4444
+#include <unistd.h>
+#include <errno.h>
+#include <arpa/inet.h> 
 
-void * clientThread(void *arg)
+int main(int argc, char *argv[])
 {
-  printf("In thread\n");
-  char message[1000];
-  char buffer[1024];
-  int clientSocket;
-  struct sockaddr_in serverAddr;
-  socklen_t addr_size;
-  // Create the socket. 
-  clientSocket = socket(PF_INET, SOCK_STREAM, 0);
-  //Configure settings of the server address
- // Address family is Internet 
-  serverAddr.sin_family = AF_INET;
-  //Set port number, using htons function 
-  serverAddr.sin_port = htons(4444);
- //Set IP address to localhost
-  serverAddr.sin_addr.s_addr = inet_addr("192.168.216.128");
-  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
-    //Connect the socket to the server using the address
-    addr_size = sizeof serverAddr;
-    connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
-    strcpy(message,"Hello");
-   if( send(clientSocket , message , strlen(message) , 0) < 0)
+    int sockfd = 0, n = 0;
+    char recvBuff[1024];
+    struct sockaddr_in serv_addr; 
+
+   //convet IPv4 AND IPv6 address from text to binary form
+    if (inet_pton(AF_INET, "192.168.216.128", &servaddr.sin_addr) <=0)
     {
-            printf("Send failed\n");
+        printf("\n Heyy! Your address is invalid \n");
+        return -1;
     }
-    //Read the message from the server into the buffer
-    if(recv(clientSocket, buffer, 1024, 0) < 0)
+
+    memset(recvBuff, '0',sizeof(recvBuff));
+    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-       printf("Receive failed\n");
-    }
-    //Print the received message
-    printf("Data received: %s\n",buffer);
-    close(clientSocket);
-    pthread_exit(NULL);
-}
-int main(){
-  int i = 0;
-  pthread_t tid[51];
-  while(i< 50)
-  {
-    if( pthread_create(&tid[i], NULL, clientThread, NULL) != 0 )
-           printf("Failed to create thread\n");
-    i++;
-  }
-  sleep(20);
-  i = 0;
-  while(i< 50)
-  {
-     pthread_join(tid[i++],NULL);
-     printf("%d:\n",i);
-  }
-  return 0;
+        printf("\n Error : Could not create socket \n");
+        return 1;
+    } 
+
+    memset(&serv_addr, '0', sizeof(serv_addr)); 
+
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(5000); 
+
+    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
+    {
+        printf("\n inet_pton error occured\n");
+        return 1;
+    } 
+
+    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+       printf("\n Error : Connect Failed \n");
+       return 1;
+    } 
+
+    while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
+    {
+        recvBuff[n] = 0;
+        if(fputs(recvBuff, stdout) == EOF)
+        {
+            printf("\n Error : Fputs error\n");
+        }
+    } 
+
+    if(n < 0)
+    {
+        printf("\n Read error \n");
+    } 
+
+    return 0;
 }

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr; 
 
    //convet IPv4 AND IPv6 address from text to binary form
-    if (inet_pton(AF_INET, "192.168.216.128", &servaddr.sin_addr) <=0)
+    if (inet_pton(AF_INET, "192.168.216.128", &serv_addr.sin_addr) <=0)
     {
         printf("\n Heyy! Your address is invalid \n");
         return -1;

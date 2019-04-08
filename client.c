@@ -7,6 +7,7 @@
 #include <fcntl.h> // for open
 #include <unistd.h> // for close
 #include<pthread.h>
+#define PORT 4444
 
 void * clientThread(void *arg)
 {
@@ -22,9 +23,9 @@ void * clientThread(void *arg)
  // Address family is Internet 
   serverAddr.sin_family = AF_INET;
   //Set port number, using htons function 
-  serverAddr.sin_port = htons(7799);
+  serverAddr.sin_port = htons(4444);
  //Set IP address to localhost
-  serverAddr.sin_addr.s_addr = inet_addr("localhost");
+  serverAddr.sin_addr.s_addr = inet_addr("192.168.216.128");
   memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
     //Connect the socket to the server using the address
     addr_size = sizeof serverAddr;

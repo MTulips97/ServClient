@@ -22,8 +22,6 @@ int main()
      myaddr.sin_family=AF_INET;
      myaddr.sin_addr.s_addr=inet_addr("192.168.216.128");
      len=sizeof myaddr;
-      if((bind(sockid,(struct sockaddr*)&myaddr,sizeof myaddr))==-1)
-    perror("bind");
      int p=connect(sockid,(struct sockaddr*)&myaddr,len);
      if(p==-1)
      perror("connect");

@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <arpa/inet.h> 
+#define PORT 4444
 
 int main(int argc, char *argv[])
 {

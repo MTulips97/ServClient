@@ -15,8 +15,8 @@ int main(int argc, char const *argv[])
     int MySock;
     char buff[1111] ;
     int rval;
-    char Client_message[256] 
-    
+    char Client_message[256];
+	
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if(sockfd < 0)
     {

@@ -1,90 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
-#include <string.h>
-#include <netdb.h>
-#include <unistd.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+#include<string.h>
 #define PORT 4444
 
-int main(int argc, char const *argv[])
+int main()
 {
-    struct sockaddr_in address;
-    int sockfd;
-    struct sockaddr_in servaddr;
-    int MySock;
-    char buff[1111] ;
-    int rval;
-    char Client_message[256];
-	
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(sockfd < 0)
-    {
-        printf("\n Socket creation error..try again \n");
-        exit (1);
-    }
-    memset(&servaddr, '0', sizeof(servaddr));
+     printf("this is a client program\n");
+     
+     struct sockaddr_in myaddr,clientaddr;
+     int newsockid;
+     int len;
+     int sockid,client_add;
+     sockid=socket(AF_INET,SOCK_STREAM,0);
+     
+     // Create Socket
+	sockid = socket(AF_INET, SOCK_STREAM , 0);
+	if(sockid < 0) {
+		perror("Failed to create socket");
+		exit(1);
+	}
+     
+     memset(&myaddr,0,sizeof myaddr);
+     
+     myaddr.sin_port=htons(4444);
+     myaddr.sin_family=AF_INET;
     
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(PORT);
-    
-    //convet IPv4 AND IPv6 address from text to binary form
-    if (inet_pton(AF_INET, "192.168.216.128", &servaddr.sin_addr) <=0)
+     if (inet_pton(AF_INET, "192.168.216.128", &myaddr.sin_addr) <=0)
     {
         printf("\n Heyy! Your address is invalid \n");
         exit (1);
     }
     
-    if (bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)))
-    {
-        printf("\n Your bind failed!!!! \n");
+     len=sizeof myaddr;
+      if(bind(sockid,(struct sockaddr*)&myaddr,sizeof (myaddr)))
+      {
+        perror("bind failed");
         exit (1);
-    }
-    
-    listen(sockfd , 10);
-
-	// Accept
-
-	do{
-		MySock = connect(sockfd , (struct sockaddr *) 0, 0);	
-			 
-	        Previous:
-	 
-		if(MySock == -1)
-		{
-			perror("connect failed");
-		}
-		else
-		{
-
-		memset(buff, 0, sizeof(buff));
-
-		if((rval = recv(MySock, buff, sizeof(buff), 0)) < 0)
-		{ perror("reading stream message failed");    }
-		
-		else if (rval == 0)
-		{ printf("Ending connection");  }
-
-		else 
-  		{
-
-        	 recv(MySock, buff, sizeof(buff), 1);
-		 printf("From Server: %s", buff);
-		 recv(MySock, buff, sizeof(buff), 0);
-		 printf("%s",buff);
-		 printf("\n");
-		 
-		//goto Previous; 
-		
-		scanf ("%[^\n]%*c", Client_message);
-			 
-                send(MySock,Client_message,strlen(Client_message),0);
-		}
-		
-		close(MySock);
-		}
-	}while(1);
-
-	return 0;
-
+      }
+     int p=connect(sockid,(struct sockaddr*)&myaddr,len);
+     if(p==-1)
+     perror("connect");
+     char msg[200];
+     int i=0;
+     char c;int l=0; char *buffer=(char *)(malloc(sizeof(char)*200)); int buffsize;
+     while(i<10)
+     {l=0;
+                printf("Client: ");
+                while((c=getchar())!='\n')
+                {
+            msg[l++]=c;
+                }
+                msg[l]='\0'; l++;
+                send(sockid,msg,l,0);
+                fflush(stdin);
+                newsockid=accept(sockid,(struct sockaddr*)&clientaddr,&client_add);
+                recv(newsockid,buffer,buffsize,0);
+                   l=0;
+                 fprintf(stdout, "server: %s", buffer);
+                  printf("\n");
+                i++;
+     }
+     close(sockid);
+     return 0;
 }

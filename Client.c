@@ -15,6 +15,7 @@ int main(int argc, char const *argv[])
     int MySock;
     char buff[1111] ;
     int rval;
+    char Client_message[256] 
     
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if(sockfd < 0)
@@ -69,7 +70,7 @@ int main(int argc, char const *argv[])
 
         	 recv(MySock, buff, sizeof(buff), 1);
 		 printf("From Server: %s", buff);
-		 recv(mysock, buff, sizeof(buff), 0);
+		 recv(MySock, buff, sizeof(buff), 0);
 		 printf("%s",buff);
 		 printf("\n");
 		 

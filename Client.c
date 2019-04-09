@@ -5,7 +5,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#define PORT 5555
+#define PORT 4444
 
 int main(int argc, char const *argv[])
 {

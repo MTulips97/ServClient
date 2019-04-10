@@ -17,9 +17,9 @@ void func(int sockfd)
         n = 0; 
         while ((buff[n++] = getchar()) != '\n') 
             ; 
-        write(sockfd, buff, 333); 
+       n = write(sockfd, buff, 333); 
         bzero(buff, 333); 
-        read(sockfd, buff, 333); 
+        n = read(sockfd, buff, 333); 
         printf("From Server : %s", buff); 
         if ((strncmp(buff, "exit", 3)) == 0) { 
             printf("Client Exit...\n"); 

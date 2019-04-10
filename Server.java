@@ -37,7 +37,7 @@ class RecieveFromClientThread implements Runnable
 				break;//break to close socket if EXIT
 			}
 			System.out.println("From Client: " + messageString);//print the message from client
-			System.out.println("Please enter something to send back to client..");
+			System.out.println("Server: ");
 		}
 		this.clientSocket.close();
 		System.exit(0);

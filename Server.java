@@ -69,7 +69,7 @@ class SendToClientThread implements Runnable
 			
 			pwPrintWriter.println(msgToClientString);//send message to client with PrintWriter
 			pwPrintWriter.flush();//flush the PrintWriter
-			System.out.println("Please enter something to send back to client..");
+			System.out.println("server: ");
 		}//end while
 		}
 		catch(Exception ex){System.out.println(ex.getMessage());}	

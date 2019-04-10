@@ -12,14 +12,14 @@ void func(int sockfd)
     char buff[222]; 
     int n; 
     for (;;) { 
-        bzero(buff, sizeof(buff)); 
+        bzero(buff, 333)); 
         printf("Enter the string : "); 
         n = 0; 
         while ((buff[n++] = getchar()) != '\n') 
             ; 
         write(sockfd, buff, sizeof(buff)); 
-        bzero(buff, sizeof(buff)); 
-        read(sockfd, buff, sizeof(buff)); 
+        bzero(buff, 333); 
+        read(sockfd, buff, 333); 
         printf("From Server : %s", buff); 
         if ((strncmp(buff, "exit", 3)) == 0) { 
             printf("Client Exit...\n"); 
@@ -28,7 +28,7 @@ void func(int sockfd)
     } 
 } 
   
-int main() 
+int main(int argc, char *argv[]) 
 { 
     int sockfd, connfd; 
     struct sockaddr_in servaddr, cli; 

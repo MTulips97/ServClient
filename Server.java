@@ -15,7 +15,7 @@ public class Server
       PrintWriter pwriter = new PrintWriter(ostream, true);
 
       InputStream istream = sock.getInputStream();
-      BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
+      BuffReader receiveRead = new BuffReader(new InputStreamReader(istream));
 
       String receiveMessage, sendMessage;               
       while(true)

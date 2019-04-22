@@ -25,19 +25,12 @@ import org.snmp4j.smi.Variable;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-/**
- * The main class of the Network Management Server. This server will listen to
- * agents sending traps. Once traps are received, it will:
- * 1. Make an SNMP GET to the agent sending the trap.
- * 2. Write the resulting message to Database.
- * 
- * @author Petri Tilli
- *
- */
+
+
 public class SnmpNms {
 
 	private static final Logger logger = Logger.getLogger(SnmpNms.class);
-	private String trapAddress = "127.0.0.1/1620";
+	private String trapAddress = "192.168.216.128/4444";
 	private NMSWindow gui;
 	
 	private String receivedAgentAddress;
@@ -196,10 +189,7 @@ public class SnmpNms {
 		saveGetToFile(date + ","+agentId+"," + response);
 	}
 
-	/**
-	 * Saving the GET message to a file.
-	 * @param line message to save
-	 */
+	
 	private void saveGetToFile(String line) {
 		PrintWriter out = null;
 		try {
@@ -214,10 +204,7 @@ public class SnmpNms {
 		}		
 	}
 
-	/**
-	 * Saving the alarm (trap) to a file.
-	 * @param line message to save
-	 */
+	
 	private void saveTrapToFile(String line) {
 		PrintWriter out = null;
 		try {
